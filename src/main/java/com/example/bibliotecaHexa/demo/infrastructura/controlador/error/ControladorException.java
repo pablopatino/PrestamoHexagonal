@@ -23,19 +23,19 @@ public class ControladorException {
 		CODIGO_ESTADO.put(ExcepcionValorObligatorio.class.getSimpleName(), HttpStatus.BAD_REQUEST.value());
 	}
 
-	@ExceptionHandler(ExcepcionValorObligatorio.class)
-	public ResponseEntity<?> valorObligatorio(Exception exception){
-		HashMap<String, Object> error = new HashMap<>();
-		error.put("mensaje", exception.getMessage());
-		return new ResponseEntity<Map<String, Object>>(error, HttpStatus.BAD_REQUEST);
-	}
-	
-	@ExceptionHandler(ExcepcionNotFound.class)
-	public ResponseEntity<?> notFound(Exception exception){
-		HashMap<String, Object> error = new HashMap<>();
-		error.put("mensaje", exception.getMessage());
-		return new ResponseEntity<Map<String, Object>>(error, HttpStatus.NOT_FOUND);
-	}
+//	@ExceptionHandler(ExcepcionValorObligatorio.class)
+//	public ResponseEntity<?> valorObligatorio(Exception exception){
+//		HashMap<String, Object> error = new HashMap<>();
+//		error.put("mensaje", exception.getMessage());
+//		return new ResponseEntity<Map<String, Object>>(error, HttpStatus.BAD_REQUEST);
+//	}
+//	
+//	@ExceptionHandler(ExcepcionNotFound.class)
+//	public ResponseEntity<?> notFound(Exception exception){
+//		HashMap<String, Object> error = new HashMap<>();
+//		error.put("mensaje", exception.getMessage());
+//		return new ResponseEntity<Map<String, Object>>(error, HttpStatus.NOT_FOUND);
+//	}
 	
 	@ExceptionHandler(Exception.class)
 	public ResponseEntity<Error> allExceptions(Exception exception){

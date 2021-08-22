@@ -2,8 +2,8 @@ package com.example.bibliotecaHexa.demo.dominio.servicio;
 
 import org.springframework.stereotype.Service;
 
+import com.example.bibliotecaHexa.demo.dominio.dto.PrestamoDTO;
 import com.example.bibliotecaHexa.demo.dominio.excepcion.ExcepcionValorObligatorio;
-import com.example.bibliotecaHexa.demo.dominio.modelo.Prestamo;
 import com.example.bibliotecaHexa.demo.dominio.puerto.repositorio.RepositorioPrestamo;
 
 @Service
@@ -16,17 +16,17 @@ public class ServicioEliminarPrestamo {
 	}
 	
 	
-	public void eliminarPrestamo(String idUsuario) {
-		Prestamo Pb = verificarUsuario(idUsuario);
-		this.repositorioPrestamo.delete(Pb);
-	}
-	
-	private Prestamo verificarUsuario(String idUsuario) {
-		Prestamo idUsuarioBaseDeDatos = this.repositorioPrestamo.buscarPrestamoPorIdentificacion(idUsuario);
-		if (idUsuarioBaseDeDatos == null) {
-			throw new ExcepcionValorObligatorio("Usuario no se encuentra");
-		}
-		return idUsuarioBaseDeDatos;
-	}
+//	public void eliminarPrestamo(String idUsuario) {
+//		PrestamoDTO Pb = verificarUsuario(idUsuario);
+//		this.repositorioPrestamo.delete(Pb);
+//	}
+//	
+//	private PrestamoDTO verificarUsuario(String idUsuario) {
+//		PrestamoDTO idUsuarioBaseDeDatos = this.repositorioPrestamo.buscarPrestamoPorIdentificacion(idUsuario);
+//		if (idUsuarioBaseDeDatos == null) {
+//			throw new ExcepcionValorObligatorio("Usuario no se encuentra");
+//		}
+//		return idUsuarioBaseDeDatos;
+//	}
 	
 }
