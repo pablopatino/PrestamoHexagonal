@@ -1,8 +1,11 @@
 package com.example.bibliotecaHexa.demo.infrastructura.controlador.error;
 
-import java.util.HashMap;
-import java.util.Map;
+
+import java.io.IOException;
 import java.util.concurrent.ConcurrentHashMap;
+
+import javax.servlet.http.HttpServletResponse;
+import javax.validation.ConstraintViolationException;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -10,6 +13,7 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
 import com.example.bibliotecaHexa.demo.dominio.excepcion.ExcepcionNotFound;
+import com.example.bibliotecaHexa.demo.dominio.excepcion.ExcepcionTipoUsuarioNoIdentico;
 import com.example.bibliotecaHexa.demo.dominio.excepcion.ExcepcionValorObligatorio;
 
 @ControllerAdvice
@@ -21,6 +25,7 @@ public class ControladorException {
 	public ControladorException() {
 		CODIGO_ESTADO.put(ExcepcionNotFound.class.getSimpleName(), HttpStatus.NOT_FOUND.value());
 		CODIGO_ESTADO.put(ExcepcionValorObligatorio.class.getSimpleName(), HttpStatus.BAD_REQUEST.value());
+		CODIGO_ESTADO.put(ExcepcionTipoUsuarioNoIdentico.class.getSimpleName(), HttpStatus.BAD_REQUEST.value());
 	}
 
 //	@ExceptionHandler(ExcepcionValorObligatorio.class)
@@ -49,7 +54,7 @@ public class ControladorException {
             Error error = new Error(excepcionNombre, mensaje);
             resultado = new ResponseEntity<>(error, HttpStatus.valueOf(codigo));
 		} else {
-            Error error = new Error(excepcionNombre, "HOLA");
+            Error error = new Error(excepcionNombre, "Internal server Error");
             
             resultado = new ResponseEntity<>(error, HttpStatus.INTERNAL_SERVER_ERROR);
             
@@ -57,5 +62,11 @@ public class ControladorException {
 		
 		return resultado;
 	}
+	
+	@ExceptionHandler(ConstraintViolationException.class)
+	public void constraitValidation(HttpServletResponse response) throws IOException{
+		response.sendError(HttpStatus.BAD_REQUEST.value());
+	}
+	
 
 }

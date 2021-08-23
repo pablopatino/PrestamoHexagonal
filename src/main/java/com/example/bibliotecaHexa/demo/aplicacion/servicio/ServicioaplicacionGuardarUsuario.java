@@ -16,11 +16,11 @@ public class ServicioaplicacionGuardarUsuario {
 	}
 	
 	public ResponseEntity<?> ejecutar(Usuario usuario){
-		return this.servicioGuardarPrestamo.crearPrestamo(usuario);
+		return this.servicioGuardarPrestamo.crearPrestamo(new Usuario(usuario.getIdentificacionUsuario(), usuario.getIsbn(), usuario.getTipoUs()));
 	}
 	
 	public ResponseEntity<?> ejecutar2(Long id){
-		return this.servicioGuardarPrestamo.mirarDto(id);
+		return this.servicioGuardarPrestamo.devolverPrestamoDto(id);
 	}
 	
 	
