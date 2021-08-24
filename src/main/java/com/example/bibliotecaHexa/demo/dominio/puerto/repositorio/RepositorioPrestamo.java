@@ -13,6 +13,10 @@ public interface RepositorioPrestamo extends CrudRepository<Prestamo, Long> {
 
 	@Query("SELECT p FROM Prestamo p WHERE p.usuario.identificacionUsuario = :identificacionUsuario")
 	public Prestamo buscarPrestamoPorIdentificacion(String identificacionUsuario);
+	
+	@Query("SELECT COUNT(p.id) FROM Prestamo p WHERE p.usuario.identificacionUsuario = :identificacionUsuario")
+	public int buscarTotalPrestamo(String identificacionUsuario);
+	
 //	
 //	
 //	@Query("SELECT p FROM PrestamoDTO p WHERE p.id = ?1")

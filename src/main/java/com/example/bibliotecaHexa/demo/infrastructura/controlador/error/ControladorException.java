@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 
 import com.example.bibliotecaHexa.demo.dominio.excepcion.ExcepcionNotFound;
 import com.example.bibliotecaHexa.demo.dominio.excepcion.ExcepcionTipoUsuarioNoIdentico;
+import com.example.bibliotecaHexa.demo.dominio.excepcion.ExcepcionUsuarioNoPuedeCambiarDeTipoUs;
 import com.example.bibliotecaHexa.demo.dominio.excepcion.ExcepcionValorObligatorio;
 
 @ControllerAdvice
@@ -26,6 +27,7 @@ public class ControladorException {
 		CODIGO_ESTADO.put(ExcepcionNotFound.class.getSimpleName(), HttpStatus.NOT_FOUND.value());
 		CODIGO_ESTADO.put(ExcepcionValorObligatorio.class.getSimpleName(), HttpStatus.BAD_REQUEST.value());
 		CODIGO_ESTADO.put(ExcepcionTipoUsuarioNoIdentico.class.getSimpleName(), HttpStatus.BAD_REQUEST.value());
+		CODIGO_ESTADO.put(ExcepcionUsuarioNoPuedeCambiarDeTipoUs.class.getSimpleName(), HttpStatus.BAD_REQUEST.value());
 	}
 
 //	@ExceptionHandler(ExcepcionValorObligatorio.class)

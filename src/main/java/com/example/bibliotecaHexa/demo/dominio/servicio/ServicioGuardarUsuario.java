@@ -12,9 +12,11 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import com.example.bibliotecaHexa.demo.dominio.dto.MensajeDTO;
 import com.example.bibliotecaHexa.demo.dominio.dto.PrestamoDTO;
 import com.example.bibliotecaHexa.demo.dominio.excepcion.ExcepcionNotFound;
 import com.example.bibliotecaHexa.demo.dominio.excepcion.ExcepcionTipoUsuarioNoIdentico;
+import com.example.bibliotecaHexa.demo.dominio.excepcion.ExcepcionUsuarioNoPuedeCambiarDeTipoUs;
 import com.example.bibliotecaHexa.demo.dominio.excepcion.ExcepcionValorObligatorio;
 import com.example.bibliotecaHexa.demo.dominio.mapper.Mapper;
 import com.example.bibliotecaHexa.demo.dominio.modelo.Prestamo;
@@ -31,6 +33,8 @@ public class ServicioGuardarUsuario {
 
 	private final static String NOT_FOUND = "No encontrado";
 	private final static String TIPO_USUARIO_REP = "Usuario ya esta registrado con otro TipoUsuario";
+	private final static String TIPO_USUARIO = "El Usuario contiene mas de 2 libros, un usuario invitado no puede prestar mas, porfavor devolver el libro antes de cambiar el Tipo de Usuario";
+	private final static String VALOR_OBLIGATORIO = "Llene los campos";
 
 	public ServicioGuardarUsuario(RepositorioUsuario repositorioUsuario, RepositorioPrestamo repositorioPrestamo,
 			Mapper mapper) {
@@ -69,9 +73,48 @@ public class ServicioGuardarUsuario {
 		this.repositorioUsuario.deleteById(id);
 		
 	}
+
+	public ResponseEntity<?> modificarUsuario(Usuario usuario){
+		validarCamposEditarUsuario(usuario);
+		validarUsuario(usuario.getIdentificacionUsuario());
+		return validarUsuarioyTipo(usuario);
+		
+	} 
+	
+	private Usuario buscarUsuarioEnBaseDeDatosPorId(String id) {
+		return this.repositorioUsuario.findById(id).orElse(null);
+	}
+	
+	private Prestamo buscarPrestamoEnBaseDeDatos(String id) {
+		return this.repositorioPrestamo.buscarPrestamoPorIdentificacion(id);
+	}
+	
+	private void validarCamposEditarUsuario(Usuario usuario) {
+		if (usuario.getIdentificacionUsuario().isEmpty() || usuario.getTipoUs() <= 0 || usuario.getTipoUs() >= 4  ) {
+			throw new ExcepcionValorObligatorio(VALOR_OBLIGATORIO);
+		}
+	}
+	
+	private ResponseEntity<?> validarUsuarioyTipo(Usuario usuario) {
+		int tipoUsuario = 3;
+		Usuario usuarioBaseDeDatos = buscarUsuarioEnBaseDeDatosPorId(usuario.getIdentificacionUsuario());
+		usuarioBaseDeDatos.setIsbn(usuario.getIsbn());
+		if (usuario.getTipoUs() == tipoUsuario) {
+				int totalPrestamo = this.repositorioPrestamo.buscarTotalPrestamo(usuario.getIdentificacionUsuario());
+				if (totalPrestamo >= 2) {
+					throw new ExcepcionUsuarioNoPuedeCambiarDeTipoUs(TIPO_USUARIO);
+				}
+		}
+		usuarioBaseDeDatos.setTipoUs(usuario.getTipoUs());
+		this.repositorioUsuario.save(usuarioBaseDeDatos);
+		
+		MensajeDTO mensaje = new MensajeDTO("Usuario modificado Correctamente");
+		return ResponseEntity.status(HttpStatus.OK).body(mensaje);
+		
+	}
 	
 	private void validarUsuario(String id) {
-		Usuario usuario = this.repositorioUsuario.findById(id).orElse(null);
+		Usuario usuario = buscarUsuarioEnBaseDeDatosPorId(id);
 		if (usuario == null) {
 			throw new ExcepcionNotFound(NOT_FOUND);
 		}
@@ -80,7 +123,7 @@ public class ServicioGuardarUsuario {
 
 	private void validarSiUsuarioYaEstaRegistrado(Usuario usuario) {
 		int tipoUsuario = usuario.getTipoUs();
-		Usuario usuarioBd = this.repositorioUsuario.findById(usuario.getIdentificacionUsuario()).orElse(null);
+		Usuario usuarioBd = buscarUsuarioEnBaseDeDatosPorId(usuario.getIdentificacionUsuario());
 		if (usuarioBd == null) {
 		
 		} else {
